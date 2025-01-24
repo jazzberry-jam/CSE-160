@@ -1,0 +1,79 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  canvas {
+    outline: 2px solid black;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .slider-columns {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+  }
+
+  .slider-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    /* outline: 2px solid black; */
+  }
+
+  img {
+    max-width: 400px;
+    height: auto;
+  }
+
+  p {
+    margin: 5px 0;
+    text-align: center;
+  }
+
+  button {
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+  }
+  
+  .controls-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .color-indicator {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    background-color: rgb(0, 0, 0); /* Default black color */
+  }
+
+  button.pressed {
+    background-color: #ddd; /* Or any color you prefer */
+    border: 2px solid #aaa; /* Optional: border change for pressed effect */
+    transform: scale(0.98); /* Optional: button shrink effect */
+  }

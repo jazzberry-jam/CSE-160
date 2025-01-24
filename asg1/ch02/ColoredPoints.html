@@ -2,34 +2,66 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Change a point color</title>
-    <style>
-      canvas {
-        outline: 2px solid black
-      }
-    </style>
+    <title>Change a Point Color</title>
+    <link rel="stylesheet" href="style.css">
   </head>
 
   <body onload="main()">
-    <canvas id="webgl" width="400" height="400"></canvas>
-    
-    <p></p>
-    <button id="clearbutton">Clear</button>
-    
-    <p>Red</p>
-    <input type="range" min="0" max="100" value="50" class="slider" id="redslide">
-    <p>Green</p>
-    <input type="range" min="0" max="100" value="50" class="slider" id="greenslide">
-    <p>Blue</p>
-    <input type="range" min="0" max="100" value="50" class="slider" id="blueslide">
-    
-    <p>Brush size</p>
-    <input type="range" min="5" max="50" value="10" class="slider" id="brushsizeslide">
-    
+    <p>I added a polygon tool that allows the user to, instead of being restricted to triangles, circles, etc., draw any polygon they want.</p>
+
+    <div class="container">
+      <!-- Canvas -->
+      <canvas id="webgl" width="400" height="400"></canvas>
+      
+      <!-- Image -->
+      <img src="../lib/wallsocket.jpg" alt="Wallsocket album cover" id="wallsocket" hidden/>
+    </div>
+
+    <!-- Number of dots and performance info -->
+    <p id="numdot">numdot: 0 ms: 0 fps: 0</p>
+
+    <!-- Controls -->
+    <div class="controls">
+      <!-- Buttons -->
+      <div class="controls-container">
+        <div id="indicator" class="color-indicator"></div>
+        <button id="clearbutton">Clear</button>
+        <button id="undobutton">Undo</button>
+        <button id="redobutton">Redo</button> |
+        <button type="button" id="selectpoint">Point</button>
+        <button type="button" id="selecttriangle">Triangle</button>
+        <button type="button" id="selectcircle">Circle</button>
+        <button type="button" id="selectpoly">Polygon</button> |
+        <button type="button" id="showexample">Example</button>
+      </div>
+
+      <!-- Sliders in columns -->
+      <div class="slider-columns">
+        <!-- Left column -->
+        <div class="slider-column">
+          <p>Red</p>
+          <input type="range" min="0" max="100" value="0" class="slider" id="redslide">
+          <p>Green</p>
+          <input type="range" min="0" max="100" value="0" class="slider" id="greenslide">
+          <p>Blue</p>
+          <input type="range" min="0" max="100" value="0" class="slider" id="blueslide">
+        </div>
+
+        <!-- Right column -->
+        <div class="slider-column">
+          <p>Brush size</p>
+          <input type="range" min="5" max="50" value="10" class="slider" id="brushsizeslide">
+          <p>Segments</p>
+          <input type="range" min="3" max="90" value="10" class="slider" id="segslide">
+        </div>
+      </div>
+    </div>
+
     <script src="../lib/webgl-utils.js"></script>
     <script src="../lib/webgl-debug.js"></script>
     <script src="../lib/cuon-utils.js"></script>
-    <script src="ColoredPoints.js"></script>
+    <script src="Actions.js"></script>
     <script src="Shapes.js"></script>
+    <script src="ColoredPoints.js"></script>
   </body>
 </html>
