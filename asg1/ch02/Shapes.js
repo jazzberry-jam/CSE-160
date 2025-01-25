@@ -97,6 +97,8 @@ class Circle {
     }
 }
 
+// ChatGPT showed me earcut triangulation, an algorithm I used to handle convex polygons
+
 class Poly {
     constructor() {
         this.type = 'poly';
