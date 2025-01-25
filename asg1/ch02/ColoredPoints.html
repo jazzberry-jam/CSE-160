@@ -10,19 +10,11 @@
     <p>I added a polygon tool that allows the user to, instead of being restricted to triangles, circles, etc., draw any polygon they want.</p>
 
     <div class="container">
-      <!-- Canvas -->
       <canvas id="webgl" width="400" height="400"></canvas>
-      
-      <!-- Image -->
       <img src="../lib/wallsocket.jpg" alt="Wallsocket album cover" id="wallsocket" hidden/>
     </div>
 
-    <!-- Number of dots and performance info -->
-    <p id="numdot">numdot: 0 ms: 0 fps: 0</p>
-
-    <!-- Controls -->
     <div class="controls">
-      <!-- Buttons -->
       <div class="controls-container">
         <div id="indicator" class="color-indicator"></div>
         <button id="clearbutton">Clear</button>
@@ -35,9 +27,7 @@
         <button type="button" id="showexample">Example</button>
       </div>
 
-      <!-- Sliders in columns -->
       <div class="slider-columns">
-        <!-- Left column -->
         <div class="slider-column">
           <p>Red</p>
           <input type="range" min="0" max="100" value="0" class="slider" id="redslide">
@@ -47,7 +37,6 @@
           <input type="range" min="0" max="100" value="0" class="slider" id="blueslide">
         </div>
 
-        <!-- Right column -->
         <div class="slider-column">
           <p>Brush size</p>
           <input type="range" min="5" max="50" value="10" class="slider" id="brushsizeslide">
@@ -57,9 +46,12 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/earcut@2.2.2/dist/earcut.min.js"></script>
     <script src="../lib/webgl-utils.js"></script>
     <script src="../lib/webgl-debug.js"></script>
     <script src="../lib/cuon-utils.js"></script>
+    <script src="Util.js"></script>
+    <script src="HandleInput.js"></script>
     <script src="Actions.js"></script>
     <script src="Shapes.js"></script>
     <script src="ColoredPoints.js"></script>

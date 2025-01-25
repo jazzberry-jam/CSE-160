@@ -1,5 +1,6 @@
 function clearCanvas() {
     g_shapesList = [];
+    lastPos = [0,0]
     renderAllShapes();
 }
 

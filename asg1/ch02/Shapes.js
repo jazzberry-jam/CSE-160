@@ -13,7 +13,7 @@ class Point {
         var brushSize = this.brushSize;
     
         // Create a buffer for the point position
-        const vertexBuffer = gl.createBuffer();
+        let vertexBuffer = gl.createBuffer();
         if (!vertexBuffer) {
             console.error("Failed to create the buffer object");
             return;
@@ -111,36 +111,58 @@ class Poly {
             return;
         }
     
-        gl.uniform4f(u_FragColor, this.color[0], this.color[1], this.color[2], this.color[3]);
-    
-        const flattenedVertices = [];
-        for (const vertex of this.vertices) {
+        // Flatten the vertices array for earcut (convert [x, y] to [x1, y1, x2, y2, ...])
+        let flattenedVertices = [];
+        for (let vertex of this.vertices) {
             flattenedVertices.push(vertex[0], vertex[1]);
         }
     
-        const vertexBuffer = gl.createBuffer();
+        // Use earcut to triangulate the polygon
+        let indices = earcut(flattenedVertices);
+        console.log(flattenedVertices)
+        console.log(indices)
+    
+        if (indices.length === 0) {
+            console.error("Failed to triangulate the polygon.");
+            return;
+        }
+    
+        // Prepare the vertex buffer
+        let vertexBuffer = gl.createBuffer();
         if (!vertexBuffer) {
-            console.error('Failed to create the buffer object');
+            console.error("Failed to create the buffer object");
             return;
         }
     
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(flattenedVertices), gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(flattenedVertices), gl.STATIC_DRAW);
     
         gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(a_Position);
     
-        // Draw the polygon using TRIANGLE_FAN
-        gl.drawArrays(gl.TRIANGLE_FAN, 0, this.vertices.length);
+        // Set the color for the polygon
+        gl.uniform4f(u_FragColor, this.color[0], this.color[1], this.color[2], this.color[3]);
     
-        // Unbind the buffer to prevent affecting other shapes
+        // Draw the triangles using the indices
+        let indexBuffer = gl.createBuffer();
+        if (!indexBuffer) {
+            console.error("Failed to create the index buffer");
+            return;
+        }
+    
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+    
+        // Cleanup
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    }    
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    }
 }
 
 function drawTriangle(vertices) {
-    // Number of vertices
-    var n = 3;
+    var n = 3; // vertices
 
     // Create a buffer object
     var vertexBuffer = gl.createBuffer();
