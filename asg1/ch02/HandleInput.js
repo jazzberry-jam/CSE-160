@@ -42,6 +42,7 @@ function handleInput() {
     document.getElementById("clearbutton").addEventListener("mouseup", clearCanvas);
     document.getElementById("undobutton").addEventListener("mouseup", undoAction);
     document.getElementById("redobutton").addEventListener("mouseup", redoAction);
+    document.getElementById("storebutton").addEventListener("mouseup", saveShapesLocally);
 
     // color
     document.getElementById("redslide").addEventListener("mouseup", function () {

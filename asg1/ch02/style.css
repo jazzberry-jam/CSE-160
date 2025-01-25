@@ -69,11 +69,11 @@ body {
     width: 20px;
     height: 20px;
     border: 1px solid #000;
-    background-color: rgb(0, 0, 0); /* Default black color */
+    background-color: rgb(0, 0, 0); 
   }
 
   button.pressed {
-    background-color: #ddd; /* Or any color you prefer */
-    border: 2px solid #aaa; /* Optional: border change for pressed effect */
-    transform: scale(0.98); /* Optional: button shrink effect */
+    background-color: #ddd; 
+    border: 2px solid #aaa; 
+    transform: scale(0.98); 
   }

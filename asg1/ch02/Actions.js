@@ -73,6 +73,8 @@ function showExample() {
     else {
         image.setAttribute("hidden", "true")
     }
+    
+    parseShapes();
 }
 
 // reset state when switching tools

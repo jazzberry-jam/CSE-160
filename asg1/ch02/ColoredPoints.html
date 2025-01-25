@@ -11,8 +11,9 @@
 
     <div class="container">
       <canvas id="webgl" width="400" height="400"></canvas>
-      <img src="../lib/wallsocket.jpg" alt="Wallsocket album cover" id="wallsocket" hidden/>
+      <img src="wallsocket.jpg" alt="Wallsocket album cover" id="wallsocket" hidden/>
     </div>
+    
 
     <div class="controls">
       <div class="controls-container">
@@ -25,6 +26,7 @@
         <button type="button" id="selectcircle">Circle</button>
         <button type="button" id="selectpoly">Polygon</button> |
         <button type="button" id="showexample">Example</button>
+        <button type="button" id="storebutton">Store</button>
       </div>
 
       <div class="slider-columns">
@@ -46,10 +48,12 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/earcut@2.2.2/dist/earcut.min.js"></script>
     <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-utiIs.js"></script>
     <script src="../lib/webgl-debug.js"></script>
     <script src="../lib/cuon-utils.js"></script>
+    <script src="wallsocket.js"></script>
+    <script src="StoreShapes.js"></script>
     <script src="Util.js"></script>
     <script src="HandleInput.js"></script>
     <script src="Actions.js"></script>

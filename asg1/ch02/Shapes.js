@@ -110,14 +110,12 @@ class Poly {
             console.error("Poly requires at least 3 vertices to render.");
             return;
         }
-    
-        // Flatten the vertices array for earcut (convert [x, y] to [x1, y1, x2, y2, ...])
+
         let flattenedVertices = [];
         for (let vertex of this.vertices) {
             flattenedVertices.push(vertex[0], vertex[1]);
         }
-    
-        // Use earcut to triangulate the polygon
+
         let indices = earcut(flattenedVertices);
         console.log(flattenedVertices)
         console.log(indices)
