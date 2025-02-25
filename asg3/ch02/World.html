@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Assignment 2</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body onload="main()">
+    <!-- <p>I added a polygon tool that allows the user to, instead of being restricted to triangles, circles, etc., draw any polygon they want.</p> -->
+    <p></p>
+    
+    <div class="container">
+      <canvas id="webgl" width="500" height="500"></canvas>
+    </div>
+    
+
+    <div class="controls">
+      <div class="controls-container">
+        <!-- <div id="indicator" class="color-indicator"></div> -->
+        <!-- <button id="clearbutton">Clear</button>
+        <button id="undobutton">Undo</button>
+        <button id="redobutton">Redo</button> |
+        <button type="button" id="selectpoint">Point</button>
+        <button type="button" id="selecttriangle">Triangle</button>
+        <button type="button" id="selectcircle">Circle</button>
+        <button type="button" id="selectpoly">Polygon</button> |
+        <button type="button" id="showexample">Example</button>
+        <button type="button" id="storebutton">Store</button> -->
+        <button type="button" id="toggleanimation">Toggle Animation</button>
+      </div>
+
+      <!-- <div class="slider-columns">
+        <div class="slider-column">
+          <p>Red</p>
+          <input type="range" min="0" max="100" value="0" class="slider" id="redslide">
+          <p>Green</p>
+          <input type="range" min="0" max="100" value="0" class="slider" id="greenslide">
+          <p>Blue</p>
+          <input type="range" min="0" max="100" value="0" class="slider" id="blueslide">
+        </div> -->
+
+        <!-- <div class="slider-column">
+          <p>Brush size</p>
+          <input type="range" min="5" max="50" value="10" class="slider" id="brushsizeslide">
+          <p>Segments</p>
+          <input type="range" min="3" max="90" value="10" class="slider" id="segslide">
+        </div> -->
+        
+        <div class="slider-column">
+          <p>Camera Angle X</p>
+          <input type="range" min="0" max="360" value="320" class="slider" id="angleXslide">
+          <p>Camera Angle Y</p>
+          <input type="range" min="0" max="360" value="30" class="slider" id="angleYslide">
+        </div>
+      </div>
+    </div>
+
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix-cse160.js"></script>
+    <script src="StoreShapes.js"></script>
+    <script src="Util.js"></script>
+    <script src="HandleInput.js"></script>
+    <script src="Actions.js"></script>
+    <script src="Shapes.js"></script>
+    <script src="World.js"></script>
+  </body>
+</html>
