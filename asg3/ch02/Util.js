@@ -45,6 +45,12 @@ function connectToGLSL() {
         console.log("Failed to get the storage location of a_Position");
         return;
     }
+    
+    a_UV = gl.getAttribLocation(gl.program, "a_UV");
+    if (a_UV < 0) {
+        console.log("Failed to get the storage location of a_UV");
+        return;
+    }
 
     u_FragColor = gl.getUniformLocation(gl.program, "u_FragColor");
     if (!u_FragColor) {
@@ -58,9 +64,9 @@ function connectToGLSL() {
         return;
     }
     
-    a_UV = gl.getUniformLocation(gl.program, "a_UV");
-    if (a_UV < 0) {
-        console.log("Failed to get the storage location of a_UV");
+    u_Select = gl.getUniformLocation(gl.program, "u_Select");
+    if (!u_Select) {
+        console.log("Failed to get the storage location of u_Select");
         return;
     }
     
@@ -81,6 +87,13 @@ function connectToGLSL() {
         console.log("Failed to get the storage location of u_GlobalRotateMatrix");
         return;
     }
+    
+    // Get the storage location of u_Sampler
+    u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler0');
+    if (!u_Sampler) {
+        console.log('Failed to get the storage location of u_Sampler'); 
+        return false; 
+    }
 }
 
 function updateColorIndicator() {
@@ -92,4 +105,36 @@ function updateColorIndicator() {
          
     colorIndicator.style.width = `${g_selectedBrushSize}px`
     colorIndicator.style.height = `${g_selectedBrushSize}px`
+}
+
+
+function initTextures () { 
+    var image = new Image(); // Create the image object 
+    if (!image) {
+        console.log('Failed to create the image object'); 
+        return false;
+    }
+    
+    // Register the event handler to be called on loading an image 
+    image.src = './chess.jpg';
+    image.onload = function() { loadTexture(image) }; // Tell the browser to load an image
+    
+    return true;
+}
+
+function loadTexture(image) {
+    var texture = gl.createTexture(); 
+    if (!texture) {
+        // Create a texture object
+        console.log('Failed to create the texture object');
+        return false;
+    }
+    
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+    gl.uniform1i(u_Sampler, 0);
+    console.log("textures loaded")
 }

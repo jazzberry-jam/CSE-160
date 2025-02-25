@@ -4,23 +4,40 @@ var VSHADER_SOURCE = `
   attribute vec4 a_Position;
   attribute vec2 a_UV;
   varying vec2 v_UV;
+  uniform float u_BrushSize;
   uniform mat4 u_ModelMatrix;
   uniform mat4 u_GlobalRotateMatrix;
-  uniform mat4 u_ProjectionMatrix;
   uniform mat4 u_ViewMatrix;
+  uniform mat4 u_ProjectionMatrix;
   void main() {
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
+    gl_PointSize = u_BrushSize;
     v_UV = a_UV;
   }\n`;
 
 // Fragment shader program
 var FSHADER_SOURCE = `
   precision mediump float;
-  uniform vec2 v_UV;
   uniform vec4 u_FragColor;
+  varying vec2 v_UV;
+  uniform sampler2D u_Sampler0;
+  uniform int u_Select;
   void main() {
-    gl_FragColor = u_FragColor;
-    gl_FragColor = vec4(v_UV,1.0,1.0);
+    if (u_Select == -2) {
+      gl_FragColor = u_FragColor;
+    }
+      
+    else if (u_Select == -1) {
+      gl_FragColor = vec4(v_UV,1.0,1.0);
+    }
+      
+    else if (u_Select == 0) {
+      gl_FragColor = texture2D(u_Sampler0, v_UV);
+    }
+      
+    else {
+      gl_FragColor = vec4(1,.2,.2,1);
+    }
   }\n`;
 
   
@@ -29,15 +46,15 @@ const TRIANGLE = 1;
 const CIRCLE = 2;
 const POLY = 3;
 
-const SHORTCUTS = {
-    'A': selectPointTool,
-    'S': selectTriangleTool,
-    'D': selectCircleTool,
-    'F': selectPolyTool,
-    'Shift+C': clearCanvas,
-    'Ctrl+Z': undoAction,
-    'Ctrl+Shift+Z': redoAction,
-  };
+// const SHORTCUTS = {
+//     'A': selectPointTool,
+//     'S': selectTriangleTool,
+//     'D': selectCircleTool,
+//     'F': selectPolyTool,
+//     'Shift+C': clearCanvas,
+//     'Ctrl+Z': undoAction,
+//     'Ctrl+Shift+Z': redoAction,
+//   };
 
 let canvas;
 let gl;
@@ -45,10 +62,12 @@ let a_Position;
 let a_UV;
 let u_FragColor;
 let u_BrushSize;
-let u_ModelMatrix;
 let u_GlobalRotateMatrix;
+let u_ModelMatrix;
+let u_Sampler;
 let u_ProjectionMatrix;
 let u_ViewMatrix;
+let u_Select;
 
 var g_selectedColor = [0.0, 0.0, 0.0, 1.0];
 var g_selectedBrushSize = 10.0;
@@ -93,10 +112,45 @@ function renderAllShapes() {
     var globalRatMat = new Matrix4().rotate(g_globalAngleX, 0, 1, 0)
     gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRatMat.elements)
     
+    var projMat = new Matrix4()
+    gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMat.elements)
+    
+    var viewMat = new Matrix4()
+    gl.uniformMatrix4fv(u_ViewMatrix, false, viewMat.elements)
+    
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.clear(gl.COLOR_BUFFER_BIT);
     
-    var body1 = new Cube(); 
+    // // Draw the body cube 
+    // var body = new Cube(); 
+    // body.color = [1.0,0.0,0.0,1.0]; 
+    // body.matrix.scale(.5, .3, .5);
+    // var bodyMat = new Matrix4(body.matrix)
+    // body.matrix.translate(-.25, -.75, 0.0); 
+    // body.render();
+    
+    // // Draw a left arm 
+    // var leftArm = new Cube(); 
+    // leftArm.color = [1,1,0,1]; 
+    // leftArm.matrix = bodyMat
+    // leftArm.matrix.rotate(g_appAngle, 0,0,1);
+    // leftArm.matrix.translate(0,0.25,0,0); 
+    // var appMat = new Matrix4(leftArm.matrix)
+    // // leftArm.matrix.scale(0.25, .7, .5);
+    // leftArm.render()
+    
+    // // Test box
+    // var box = new Cube(); 
+    // box.color = [1,0,1,1];
+    // box.matrix = appMat
+    // box.matrix.translate(0,1,0,0); 
+    // box.matrix.rotate(Math.sin(g_seconds*10)*30,1,0,0); 
+    // // box.matrix.scale(.5,.5,.5);
+    // box.render();
+    
+    
+    var body1 = new Cube();
+    body1.textureSelect = 0; 
     body1.color = [1.0,0.0,0.0,1.0];
     body1.matrix.scale(.4,.4,.4,1)
     body1.matrix.translate(-1,-1,0,1)
@@ -201,13 +255,15 @@ function main() {
         handleClick(ev);
     };
 
-    if (!drawingPoly) {
-        canvas.onmousemove = function (ev) {
-            if (ev.buttons == 1) {
-                handleClick(ev);
-            }
-        };
-    }
+    // if (!drawingPoly) {
+    //     canvas.onmousemove = function (ev) {
+    //         if (ev.buttons == 1) {
+    //             handleClick(ev);
+    //         }
+    //     };
+    // }
+    
+    initTextures()
 
     gl.clearColor(1.0, 1.0, 1.0, 0.0);
     //gl.clear(gl.COLOR_BUFFER_BIT);
