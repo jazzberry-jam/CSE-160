@@ -100,6 +100,30 @@ function connectToGLSL() {
         console.log('Failed to get the storage location of u_Sampler'); 
         return false; 
     }
+    
+    u_lightPos = gl.getUniformLocation(gl.program, 'u_lightPos');
+    if (!u_lightPos) {
+        console.log('Failed to get the storage location of u_lightPos'); 
+        return false; 
+    }
+    
+    u_cameraPos = gl.getUniformLocation(gl.program, 'u_cameraPos');
+    if(!u_cameraPos) {
+        console.log('failed to get u_cameraPos location');
+        return false;
+    }
+    
+    u_lightOn = gl.getUniformLocation(gl.program, 'u_lightOn');
+    if (!u_lightOn) {
+        console.log('Failed to get the storage location of u_lightOn');
+        return;
+    }
+
+    u_SlightOn = gl.getUniformLocation(gl.program, 'u_SlightOn');
+    if (!u_SlightOn) {
+        console.log('Failed to get the storage location of u_SlightOn');
+        return;
+    }
 }
 
 function updateColorIndicator() {
@@ -145,6 +169,10 @@ function loadTexture(image) {
     console.log("textures loaded")
 }
 
+function updateAnimationAngles() {
+    g_lightPos[0] += Math.cos(g_seconds)*.025;
+}
+
 function drawAll() {
     //////
     
@@ -153,6 +181,8 @@ function drawAll() {
     body1.color = [1.0,0.0,0.0,1.0];
     body1.matrix.scale(.4,.4,.4,1)
     body1.matrix.translate(-1,-1,0,1)
+    body1.matrix.translate(-2,-4.25,-2,1)
+    body1.matrix.rotate(90, 0, 1, 0)
     body1.render()
     
     var body2 = new Cube(); 
@@ -242,13 +272,22 @@ function drawAll() {
     arm6.render()
     
     var sphere = new Sphere();
-    if (g_normalOn) {sphere.textureSelect = -3} else {sphere.textureSelect = -2} 
+    if (g_normalOn) {sphere.textureSelect = -3} else {sphere.textureSelect = 0} 
+    sphere.matrix.translate(1.5,-1.5,-1.5)
     sphere.render()
     
     var skybox = new Cube();
     if (g_normalOn) {skybox.textureSelect = -3} else {skybox.textureSelect = -2} 
     skybox.color = [0.9,0.9,0.9,1.0];
-    skybox.matrix.scale(-10,-10,-10,1)
+    skybox.matrix.scale(-5,-5,-5,1)
     skybox.matrix.translate(-0.5,-0.5,-0.5,1)
     skybox.render()
+    
+    var light = new Cube();
+    light.textureSelect = -2;
+    light.color = [2,2,0,1];
+    light.matrix.translate(g_lightPos[0],g_lightPos[1],g_lightPos[2]);
+    light.matrix.scale(-.2,-.2,-.2);
+    // light.matrix.translate(1.75, 3, 12);
+    light.render();
 }

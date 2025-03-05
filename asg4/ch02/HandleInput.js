@@ -36,8 +36,6 @@ function handleKeyDown(ev) {
 
 // handle input changes and tool selection
 function handleInput() {
-    // document.addEventListener("keydown", keydown);
-    
     document.getElementById("toggleanimation").addEventListener("mouseup", function () {
         if (g_animationToggle) {
             g_animationToggle = false
@@ -53,12 +51,16 @@ function handleInput() {
         g_globalAngleX = this.value;
         renderAllShapes();
     });
-    document.getElementById("angleYslide").addEventListener("mousemove", function () {
-        g_globalAngleY = this.value;
-        renderAllShapes();
-    });
     
     document.getElementById('normalToggle').onclick = function() {if (g_normalOn) {g_normalOn = false} else {g_normalOn = true}};
+    
+    document.getElementById('lightx').addEventListener('mousemove', function(ev) {if (ev.buttons == 1) {g_lightPos[0] = this.value/100; renderAllShapes();}});
+    document.getElementById('lighty').addEventListener('mousemove', function(ev) {if (ev.buttons == 1) {g_lightPos[1] = this.value/100; renderAllShapes();}});
+    document.getElementById('lightz').addEventListener('mousemove', function(ev) {if (ev.buttons == 1) {g_lightPos[2] = this.value/100; renderAllShapes();}});
+    
+    document.getElementById('lightToggle').onclick = function() {if (g_lightOn) {g_lightOn = false; document.getElementById("slightToggle").style.display = "none";} else {g_lightOn = true; document.getElementById("slightToggle").style.display = "";}};
+
+    document.getElementById('slightToggle').onclick = function() {if (g_SlightOn) {g_SlightOn = false} else {g_SlightOn = true}};
 }
 
 // handle clicks and shape creation

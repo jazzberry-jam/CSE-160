@@ -29,17 +29,19 @@
         <button type="button" id="storebutton">Store</button> -->
         <button type="button" id="toggleanimation">Toggle Animation</button>
         <button type="button" id="normalToggle">Toggle Normals</button>
+        <button type="button" id="lightToggle">Toggle Light</button>
+        <button type="button" id="slightToggle">Toggle Specular Light</button>
       </div>
 
-      <!-- <div class="slider-columns">
+      <div class="slider-columns">
         <div class="slider-column">
-          <p>Red</p>
-          <input type="range" min="0" max="100" value="0" class="slider" id="redslide">
-          <p>Green</p>
-          <input type="range" min="0" max="100" value="0" class="slider" id="greenslide">
-          <p>Blue</p>
-          <input type="range" min="0" max="100" value="0" class="slider" id="blueslide">
-        </div> -->
+          <p>Light Pos X</p>
+          <input type="range" min="-250" max="250" value="0" class="slider" id="lightx">
+          <p>Light Pos Y</p>
+          <input type="range" min="-250" max="250" value="0" class="slider" id="lighty">
+          <p>Light Pos Z</p>
+          <input type="range" min="-250" max="250" value="0" class="slider" id="lightz">
+        </div>
 
         <!-- <div class="slider-column">
           <p>Brush size</p>
@@ -50,9 +52,7 @@
         
         <div class="slider-column">
           <p>Camera Angle X</p>
-          <input type="range" min="0" max="360" value="320" class="slider" id="angleXslide">
-          <p>Camera Angle Y</p>
-          <input type="range" min="0" max="360" value="30" class="slider" id="angleYslide">
+          <input type="range" min="0" max="360" value="180" class="slider" id="angleXslide">
         </div>
       </div>
     </div>

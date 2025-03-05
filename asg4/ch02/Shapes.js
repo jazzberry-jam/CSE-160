@@ -97,75 +97,12 @@ class Circle {
     }
 }
 
-// ChatGPT showed me earcut triangulation, an algorithm I used to handle convex polygons
-
-class Poly {
-    constructor() {
-        this.type = 'poly';
-        this.color = [1.0, 1.0, 1.0, 1.0];
-        this.vertices = []
-        this.segments = 0
-    }
-    
-    render() {
-        if (this.vertices.length < 3) {
-            console.error("Poly requires at least 3 vertices to render.");
-            return;
-        }
-
-        let flattenedVertices = [];
-        for (let vertex of this.vertices) {
-            flattenedVertices.push(vertex[0], vertex[1]);
-        }
-
-        let indices = earcut(flattenedVertices);
-        console.log(flattenedVertices)
-        console.log(indices)
-    
-        if (indices.length === 0) {
-            console.error("Failed to triangulate the polygon.");
-            return;
-        }
-    
-        // Prepare the vertex buffer
-        let vertexBuffer = gl.createBuffer();
-        if (!vertexBuffer) {
-            console.error("Failed to create the buffer object");
-            return;
-        }
-    
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(flattenedVertices), gl.STATIC_DRAW);
-    
-        gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(a_Position);
-    
-        // Set the color for the polygon
-        gl.uniform4f(u_FragColor, this.color[0], this.color[1], this.color[2], this.color[3]);
-    
-        // Draw the triangles using the indices
-        let indexBuffer = gl.createBuffer();
-        if (!indexBuffer) {
-            console.error("Failed to create the index buffer");
-            return;
-        }
-    
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-    
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-    
-        // Cleanup
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-    }
-}
-
 class Cube {
     constructor(){
         this.type = "cube"
         this.color = [1.0, 1.0, 1.0, 1.0]
         this.matrix = new Matrix4()
+        // this.normalMatrix = new Matrix4()
         this.textureSelect = 0
     }
     
@@ -179,32 +116,32 @@ class Cube {
         gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
       
         // front 
-        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+        // gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
         drawTriangle3DUVNormal([0,0,0, 1,1,0, 1,0,0], [0,0, 1,1, 1,0], [0,0,-1, 0,0,-1, 0,0,-1]);
         drawTriangle3DUVNormal([0,0,0, 0,1,0, 1,1,0], [0,0, 0,1, 1,1], [0,0,-1, 0,0,-1, 0,0,-1]);
 
         // back
-        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+        // gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
         drawTriangle3DUVNormal([0,0,1, 1,1,1, 0,1,1], [0,0, 1,1, 0,1], [0,0,1, 0,0,1, 0,0,1]);
         drawTriangle3DUVNormal([0,0,1, 1,0,1, 1,1,1], [0,0, 1,0, 1,1], [0,0,1, 0,0,1, 0,0,1]);
 
         // top
-        gl.uniform4f(u_FragColor, rgba[0] * 0.9, rgba[1] * 0.9, rgba[2] * 0.9, rgba[3]);
+        // gl.uniform4f(u_FragColor, rgba[0] * 0.9, rgba[1] * 0.9, rgba[2] * 0.9, rgba[3]);
         drawTriangle3DUVNormal([0,1,1, 1,1,1, 1,1,0], [0,0, 1,0, 1,1], [0,1,0, 0,1,0, 0,1,0]);
         drawTriangle3DUVNormal([1,1,0, 0,1,1, 0,1,0], [1,1, 0,0, 0,1], [0,1,0, 0,1,0, 0,1,0]);
 
         // bottom
-        gl.uniform4f(u_FragColor, rgba[0] * 0.9, rgba[1] * 0.9, rgba[2] * 0.9, rgba[3]);
+        // gl.uniform4f(u_FragColor, rgba[0] * 0.9, rgba[1] * 0.9, rgba[2] * 0.9, rgba[3]);
         drawTriangle3DUVNormal([0,0,1, 1,0,1, 1,0,0], [0,0, 1,0, 1,1], [0,-1,0, 0,-1,0, 0,-1,0]);
         drawTriangle3DUVNormal([1,0,0, 0,0,1, 0,0,0], [1,1, 0,0, 0,1], [0,-1,0, 0,-1,0, 0,-1,0]);
 
         // left
-        gl.uniform4f(u_FragColor, rgba[0] * 0.8, rgba[1] * 0.8, rgba[2] * 0.8, rgba[3]);
+        // gl.uniform4f(u_FragColor, rgba[0] * 0.8, rgba[1] * 0.8, rgba[2] * 0.8, rgba[3]);
         drawTriangle3DUVNormal([0,0,0, 0,1,1, 0,0,1], [0,0, 1,1, 0,1], [-1,0,0, -1,0,0, -1,0,0]);
         drawTriangle3DUVNormal([0,0,0, 0,1,0, 0,1,1], [0,0, 0,1, 1,1], [-1,0,0, -1,0,0, -1,0,0]);
 
         // right
-        gl.uniform4f(u_FragColor, rgba[0] * 0.8, rgba[1] * 0.8, rgba[2] * 0.8, rgba[3]);
+        // gl.uniform4f(u_FragColor, rgba[0] * 0.8, rgba[1] * 0.8, rgba[2] * 0.8, rgba[3]);
         drawTriangle3DUVNormal([1,0,0, 1,1,1, 1,0,1], [0,0, 1,1, 0,1], [1,0,0, 1,0,0, 1,0,0]);
         drawTriangle3DUVNormal([1,0,0, 1,1,0, 1,1,1], [0,0, 0,1, 1,1], [1,0,0, 1,0,0, 1,0,0]);
     }
