@@ -57,19 +57,8 @@ function handleInput() {
         g_globalAngleY = this.value;
         renderAllShapes();
     });
-    // document.getElementById("appangle").addEventListener("mousemove", function () {
-    //     g_appAngle = this.value;
-    //     renderAllShapes();
-    // });
-
-    // // shapes
-    // document.getElementById("selectpoint").onclick = selectPointTool;
-    // document.getElementById("selecttriangle").onclick = selectTriangleTool;
-    // document.getElementById("selectcircle").onclick = selectCircleTool;
-    // document.getElementById("selectpoly").onclick = selectPolyTool;
     
-    // // example
-    // document.getElementById("showexample").onclick = showExample;
+    document.getElementById('normalToggle').onclick = function() {if (g_normalOn) {g_normalOn = false} else {g_normalOn = true}};
 }
 
 // handle clicks and shape creation

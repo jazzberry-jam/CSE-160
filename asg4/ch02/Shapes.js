@@ -176,102 +176,92 @@ class Cube {
         gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3])
         gl.uniform1i(u_Select, this.textureSelect)
         
-        // Front 
-        drawTriangle3DUV( [0,0,0, 1,1,0, 1,0,0 ] , [0,0, 1,1, 1,0 ]); 
-        drawTriangle3DUV( [0,0,0, 0,1,0, 1,1,0 ] , [0,0, 0,1, 1,1 ]);
-        
-        // Back
-        drawTriangle3DUV([0,0,1, 1,1,1, 0,1,1], [0,0, 1,1, 0,1]);
-        drawTriangle3DUV([0,0,1, 1,0,1, 1,1,1], [0,0, 1,0, 1,1]);
-        
-        // Side 1
-        drawTriangle3DUV([0,0,0, 0,1,1, 0,0,1], [0,0, 1,1, 0,1]);
-        drawTriangle3DUV([0,0,0, 0,1,0, 0,1,1], [0,0, 0,1, 1,1]);
-        
-        
-        // Bottom
-        drawTriangle3DUV([0,0,1, 1,0,1, 1,0,0], [0,0, 1,0, 1,1]);
-        drawTriangle3DUV([1,0,0, 0,0,1, 0,0,0], [1,1, 0,0, 0,1]);
-        
-        // gl.uniform4f(u_FragColor, rgba[0]*.95, rgba[1]*.95, rgba[2]*.95, rgba[3]);
-        
-        // Side 2
-        drawTriangle3DUV([1,0,0, 1,1,1, 1,0,1], [0,0, 1,1, 0,1]);
-        drawTriangle3DUV([1,0,0, 1,1,0, 1,1,1], [0,0, 0,1, 1,1]);
+        gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
+      
+        // front 
+        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+        drawTriangle3DUVNormal([0,0,0, 1,1,0, 1,0,0], [0,0, 1,1, 1,0], [0,0,-1, 0,0,-1, 0,0,-1]);
+        drawTriangle3DUVNormal([0,0,0, 0,1,0, 1,1,0], [0,0, 0,1, 1,1], [0,0,-1, 0,0,-1, 0,0,-1]);
 
-        // gl.uniform4f(u_FragColor, rgba[0]*.9, rgba[1]*.9, rgba[2]*.9, rgba[3]);
-        
-        // Top
-        drawTriangle3DUV([0,1,1, 1,1,1, 1,1,0], [0,0, 1,0, 1,1]);
-        drawTriangle3DUV([1,1,0, 0,1,1, 0,1,0], [1,1, 0,0, 0,1]);
+        // back
+        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+        drawTriangle3DUVNormal([0,0,1, 1,1,1, 0,1,1], [0,0, 1,1, 0,1], [0,0,1, 0,0,1, 0,0,1]);
+        drawTriangle3DUVNormal([0,0,1, 1,0,1, 1,1,1], [0,0, 1,0, 1,1], [0,0,1, 0,0,1, 0,0,1]);
+
+        // top
+        gl.uniform4f(u_FragColor, rgba[0] * 0.9, rgba[1] * 0.9, rgba[2] * 0.9, rgba[3]);
+        drawTriangle3DUVNormal([0,1,1, 1,1,1, 1,1,0], [0,0, 1,0, 1,1], [0,1,0, 0,1,0, 0,1,0]);
+        drawTriangle3DUVNormal([1,1,0, 0,1,1, 0,1,0], [1,1, 0,0, 0,1], [0,1,0, 0,1,0, 0,1,0]);
+
+        // bottom
+        gl.uniform4f(u_FragColor, rgba[0] * 0.9, rgba[1] * 0.9, rgba[2] * 0.9, rgba[3]);
+        drawTriangle3DUVNormal([0,0,1, 1,0,1, 1,0,0], [0,0, 1,0, 1,1], [0,-1,0, 0,-1,0, 0,-1,0]);
+        drawTriangle3DUVNormal([1,0,0, 0,0,1, 0,0,0], [1,1, 0,0, 0,1], [0,-1,0, 0,-1,0, 0,-1,0]);
+
+        // left
+        gl.uniform4f(u_FragColor, rgba[0] * 0.8, rgba[1] * 0.8, rgba[2] * 0.8, rgba[3]);
+        drawTriangle3DUVNormal([0,0,0, 0,1,1, 0,0,1], [0,0, 1,1, 0,1], [-1,0,0, -1,0,0, -1,0,0]);
+        drawTriangle3DUVNormal([0,0,0, 0,1,0, 0,1,1], [0,0, 0,1, 1,1], [-1,0,0, -1,0,0, -1,0,0]);
+
+        // right
+        gl.uniform4f(u_FragColor, rgba[0] * 0.8, rgba[1] * 0.8, rgba[2] * 0.8, rgba[3]);
+        drawTriangle3DUVNormal([1,0,0, 1,1,1, 1,0,1], [0,0, 1,1, 0,1], [1,0,0, 1,0,0, 1,0,0]);
+        drawTriangle3DUVNormal([1,0,0, 1,1,0, 1,1,1], [0,0, 0,1, 1,1], [1,0,0, 1,0,0, 1,0,0]);
     }
 }
 
-function drawTriangle(vertices) {
-    var n = 3; // vertices
-
-    // Create a buffer object
-    var vertexBuffer = gl.createBuffer();
-    if (!vertexBuffer) {
-        console.log('Failed to create the buffer object');
-        return -1;
+class Sphere {
+    constructor() {
+        this.type = 'sphere';
+        this.color = [1.0, 1.0, 1.0, 1.0];
+        this.matrix = new Matrix4();
+        this.textureSelect = -2;
+        this.verts32 = new Float32Array([]);
     }
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
-    
-    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_Position);
-    
-    gl.drawArrays(gl.TRIANGLES, 0, n);
-}
+    render() {
+        var rgba = this.color;
+        gl.uniform1i(u_Select, this.textureSelect);
+        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+        gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
 
-function drawTriangle3D(vertices) {
-    var n = 3; // vertices
+        var d = Math.PI / 10;
+        var dd = Math.PI / 10;
 
-    // Create a buffer object
-    var vertexBuffer = gl.createBuffer();
-    if (!vertexBuffer) {
-        console.log('Failed to create the buffer object');
-        return -1;
+        let sin = Math.sin;
+        let cos = Math.cos;
+
+        for (var t = 0; t < Math.PI; t += d) {
+            for (var r = 0; r < 2 * Math.PI; r += d) {
+                var p1 = [sin(t) * cos(r), sin(t) * sin(r), cos(t)];
+
+                var p2 = [sin(t + dd) * cos(r), sin(t + dd) * sin(r), cos(t + dd)];
+                var p3 = [sin(t) * cos(r + dd), sin(t) * sin(r + dd), cos(t)];
+                var p4 = [sin(t + dd) * cos(r + dd), sin(t + dd) * sin(r + dd), cos(t + dd)];
+
+                var uv1 = [t / Math.PI, r / (2 * Math.PI)];
+                var uv2 = [(t + dd) / Math.PI, r / (2 * Math.PI)];
+                var uv3 = [t / Math.PI, (r + dd) / (2 * Math.PI)];
+                var uv4 = [(t + dd) / Math.PI, (r + dd) / (2 * Math.PI)];
+
+                var v = [];
+                var uv = [];
+                v = v.concat(p1); uv = uv.concat(uv1);
+                v = v.concat(p2); uv = uv.concat(uv2);
+                v = v.concat(p4); uv = uv.concat(uv4);
+
+                gl.uniform4f(u_FragColor, 1, 1, 1, 1);
+                drawTriangle3DUVNormal(v, uv, v);
+
+                v = [];
+                uv = [];
+                v = v.concat(p1); uv = uv.concat(uv1);
+                v = v.concat(p4); uv = uv.concat(uv4);
+                v = v.concat(p3); uv = uv.concat(uv3);
+
+                gl.uniform4f(u_FragColor, 1, 0, 0, 1);
+                drawTriangle3DUVNormal(v, uv, v);
+            }
+        }
     }
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
-    
-    gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_Position);
-    
-    gl.drawArrays(gl.TRIANGLES, 0, n);
-}
-
-function drawTriangle3DUV (vertices, uv) {
-    var n = 3; // vertices
-
-    // Create a buffer object
-    var vertexBuffer = gl.createBuffer();
-    if (!vertexBuffer) {
-        console.log('Failed to create the buffer object');
-        return -1;
-    }
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
-    
-    gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_Position);
-    
-    var uvBuffer = gl.createBuffer();
-    if (!uvBuffer) {
-        console.log('Failed to create the buffer object');
-        return -1;
-    }
-    
-    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uv), gl.DYNAMIC_DRAW);
-    
-    gl.vertexAttribPointer(a_UV, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_UV);
-    
-    gl.drawArrays(gl.TRIANGLES, 0, n);
 }

@@ -3,7 +3,9 @@
 var VSHADER_SOURCE = `
   attribute vec4 a_Position;
   attribute vec2 a_UV;
+  attribute vec3 a_Normal;
   varying vec2 v_UV;
+  varying vec3 v_Normal;
   uniform float u_BrushSize;
   uniform mat4 u_ModelMatrix;
   uniform mat4 u_GlobalRotateMatrix;
@@ -13,6 +15,7 @@ var VSHADER_SOURCE = `
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
     gl_PointSize = u_BrushSize;
     v_UV = a_UV;
+    v_Normal = a_Normal;
   }\n`;
 
 // Fragment shader program
@@ -20,10 +23,15 @@ var FSHADER_SOURCE = `
   precision mediump float;
   uniform vec4 u_FragColor;
   varying vec2 v_UV;
+  varying vec3 v_Normal;
   uniform sampler2D u_Sampler0;
   uniform int u_Select;
   void main() {
-    if (u_Select == -2) {
+    if (u_Select == -3) {
+      gl_FragColor = vec4((v_Normal + 1.0)/2.0, 1.0);
+    }
+  
+    else if (u_Select == -2) {
       gl_FragColor = u_FragColor;
     }
       
@@ -58,8 +66,11 @@ const POLY = 3;
 
 let canvas;
 let gl;
+
 let a_Position;
 let a_UV;
+var a_Normal;
+
 let u_FragColor;
 let u_BrushSize;
 let u_GlobalRotateMatrix;
@@ -80,8 +91,9 @@ var g_globalAngleY = 30
 var g_appAngle = 0
 var g_animationToggle = true
 var g_camera;
-
 var g_shapesList = [];
+var g_normalOn = false;
+
 var lastPos = [0, 0];
 var drawingPoly = false;
 var undoStack = []
@@ -108,110 +120,17 @@ function renderAllShapes() {
     gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements)
     
     var projMat = new Matrix4()
-    projMat.setPerspective(60, canvas.width/canvas.height, .1, 100)
+    projMat.setPerspective(90, canvas.width/canvas.height, .1, 100)
     gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMat.elements)
     
     var viewMat = new Matrix4()
-    viewMat.setLookAt(0,0,-3, 0,0,0, 0,1,0)
+    viewMat.setLookAt(0,1,-3, 0,0,0, 0,1,0)
     gl.uniformMatrix4fv(u_ViewMatrix, false, viewMat.elements)
     
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.clear(gl.COLOR_BUFFER_BIT);
     
-    //////
-    
-    var body1 = new Cube();
-    body1.textureSelect = 0; 
-    body1.color = [1.0,0.0,0.0,1.0];
-    body1.matrix.scale(.4,.4,.4,1)
-    body1.matrix.translate(-1,-1,0,1)
-    body1.render()
-    
-    var body2 = new Cube(); 
-    body2.color = [0.0,0.0,1.0,1.0];
-    body2.matrix = new Matrix4(body1.matrix)
-    body2.matrix.scale(1.6,1.4,1.5,1)
-    body2.matrix.translate(0.6,-0.1,-.2,1)
-    body2.render()
-    
-    var head = new Cube(); 
-    head.color = [0.0,1.0,0.0,1.0];
-    head.matrix = new Matrix4(body1.matrix)
-    head.matrix.scale(1.2,1.2,1.2,1)
-    head.matrix.translate(-1,-.1,-.1,1)
-    head.render()
-    
-    var arm1 = new Cube()
-    arm1.color = [0,1.0,1.0,1.0];
-    arm1.matrix = new Matrix4(body1.matrix)
-    arm1.matrix.rotate(Math.sin((g_seconds*10)+1)*10,1,0,0)
-    arm1.matrix.translate(.9,.5,1,1)
-    arm1.matrix.rotate(30, 1, 0, 0)
-    arm1.matrix.rotate(-30, 0, 0, 1)
-    arm1.matrix.rotate(-75, 0, 1, 0)
-    arm1.matrix.scale(2,.3,.3,1)
-    arm1.render()
-    
-    var arm2 = new Cube()
-    arm2.color = [1.0,1.0,0,1.0];
-    arm2.matrix = new Matrix4(body1.matrix)
-    arm2.matrix.rotate(Math.sin((g_seconds*10)+9)*10,1,0,0)
-    arm2.matrix.translate(0.7,.5,1,1)
-    arm2.matrix.rotate(30, 1, 0, 0)
-    arm2.matrix.rotate(-15, 0, 0, 1)
-    arm2.matrix.rotate(-90, 0, 1, 0)
-    arm2.matrix.scale(2,.3,.3,1)
-    arm2.render()
-    
-    var arm3 = new Cube()
-    arm3.color = [1.0,0.0,1.0,1.0];
-    arm3.matrix = new Matrix4(body1.matrix)
-    arm3.matrix.rotate(Math.sin((g_seconds*10)+2)*10,1,0,0)
-    arm3.matrix.translate(0.5,.5,1,1)
-    arm3.matrix.rotate(30, 1, 0, 0)
-    arm3.matrix.rotate(15, 0, 0, 1)
-    arm3.matrix.rotate(-105, 0, 1, 0)
-    arm3.matrix.scale(2,.3,.3,1)
-    arm3.render()
-    
-    var arm4 = new Cube()
-    arm4.color = [0,1.0,1.0,1.0];
-    arm4.matrix = new Matrix4(body1.matrix)
-    arm4.matrix.rotate(Math.sin((g_seconds*10)+8)*10,1,0,0)
-    arm4.matrix.translate(1.1,0,1,1)
-    arm4.matrix.rotate(180, 0, 1, 0)
-    arm4.matrix.translate(.9,.5,1,1)
-    arm4.matrix.rotate(30, 1, 0, 0)
-    arm4.matrix.rotate(-30, 0, 0, 1)
-    arm4.matrix.rotate(-75, 0, 1, 0)
-    arm4.matrix.scale(2,.3,.3,1)
-    arm4.render()
-    
-    var arm5 = new Cube()
-    arm5.color = [1.0,1.0,0,1.0];
-    arm5.matrix = new Matrix4(body1.matrix)
-    arm5.matrix.rotate(Math.sin((g_seconds*10)+3)*10,1,0,0)
-    arm5.matrix.translate(1.1,0,1,1)
-    arm5.matrix.rotate(180, 0, 1, 0)
-    arm5.matrix.translate(0.7,.5,1,1)
-    arm5.matrix.rotate(30, 1, 0, 0)
-    arm5.matrix.rotate(-15, 0, 0, 1)
-    arm5.matrix.rotate(-90, 0, 1, 0)
-    arm5.matrix.scale(2,.3,.3,1)
-    arm5.render()
-    
-    var arm6 = new Cube()
-    arm6.color = [1.0,0.0,1.0,1.0];
-    arm6.matrix = new Matrix4(body1.matrix)
-    arm6.matrix.rotate(Math.sin((g_seconds*10)+6)*10,1,0,0)
-    arm6.matrix.translate(1.1,0,1,1)
-    arm6.matrix.rotate(180, 0, 1, 0)
-    arm6.matrix.translate(0.5,.5,1,1)
-    arm6.matrix.rotate(30, 1, 0, 0)
-    arm6.matrix.rotate(15, 0, 0, 1)
-    arm6.matrix.rotate(-105, 0, 1, 0)
-    arm6.matrix.scale(2,.3,.3,1)
-    arm6.render()
+    drawAll()
 }
 
 function main() {
